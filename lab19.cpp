@@ -3,6 +3,9 @@
 #include <cstring>
 #include <string>
 #include <vector>
+#include <cstdlib>
+#include <ctime>
+#include <iomanip>
 using namespace std;
 
 struct ReviewNode {
@@ -26,6 +29,11 @@ private:
         head = nullptr;
     }
 
+    double generateRandomRating() {
+        int randomInt = 10 + (rand() % 41);
+        return static_cast<double>(randomInt) / 10.0;
+    }
+
 public:
     Movie(string movieTitle) : title(movieTitle), reviewHead(nullptr) {}
 
@@ -42,15 +50,41 @@ public:
         reviewHead = newNode;
     }
 
+    void printReviews() const {
+        cout << " --- Movie: " << title << " ---" << endl;
+        if (reviewHead == nullptr) {
+            cout << "  No reviews available." << endl;
+            return;
+        }
+
+        ReviewNode* current = reviewHead;
+        int count = 0;
+        double total = 0.0;
+
+        cout << "  Reviews:" << endl;
+        while (current != nullptr) {
+            count++;
+            total += current->rating;
+            cout << "    > Review #" << count << ": " << fixed << setprecision(1) 
+                 << current->rating << ": " << current->comment << endl;
+            current = current->next;
+        }
+
+        double average = total / count;
+        cout << "  Average Rating: " << fixed << setprecision(1) << average << endl;
+    }
+
     string getTitle() const {
         return title;
     }
 };
 
 int main() {
+    srand(static_cast<unsigned int>(time(0)));
+
     Movie testMovie("Test movie 1");
     testMovie.addReview("Test comment 1");
-    cout << "Added review to: " << testMovie.getTitle() << endl;
-    
+    testMovie.printReviews();
+
     return 0;
 }
