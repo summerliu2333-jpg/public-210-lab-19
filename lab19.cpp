@@ -43,9 +43,9 @@ public:
     }
 
     void addReview(const char* comment) {
-        double tempRating = 3.0;
+        double randomRating = generateRandomRating();
         ReviewNode* newNode = new ReviewNode();
-        newNode->rating = tempRating;
+        newNode->rating = randomRating;
         strcpy(newNode->comment, comment);
         newNode->next = reviewHead;
         reviewHead = newNode;
@@ -108,9 +108,26 @@ int main() {
         return 1;
     }
 
-    Movie testMovie("Test movie 1");
-    testMovie.addReview(allComments[0].c_str());
-    testMovie.printReviews();
+    vector<Movie> movieContainer;
+    movieContainer.emplace_back("Test movie 1");
+    movieContainer.emplace_back("Test movie 2");
+    movieContainer.emplace_back("Test movie 3");
+    movieContainer.emplace_back("Test movie 4");
+
+    int commentIndex = 0;
+    for (auto& movie : movieContainer) {
+        for (int i = 0; i < 3; i++) {
+            if (commentIndex >= allComments.size()) commentIndex = 0;
+            movie.addReview(allComments[commentIndex].c_str());
+            commentIndex++;
+        }
+    }
+
+    cout << " ----- All Movie Reviews ----- " << endl;
+    for (const auto& movie : movieContainer) {
+        movie.printReviews();
+    }
+
 
     return 0;
 }
