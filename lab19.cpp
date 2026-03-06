@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <iomanip>
+#include <fstream>
 using namespace std;
 
 struct ReviewNode {
@@ -79,11 +80,36 @@ public:
     }
 };
 
+vector<string> readCommentsFromFile(const string& filename) {
+    vector<string> comments;
+    ifstream file(filename);
+    if (!file.is_open()) {
+        cout << "Could not open file " << filename << "!" << endl;
+        return comments;
+    }
+
+    string line;
+    while (getline(file, line)) {
+        if (!line.empty()) {
+            comments.push_back(line);
+        }
+    }
+    file.close();
+    cout << "Read " << comments.size() << " comments from input.txt." << endl;
+    return comments;
+}
+
 int main() {
     srand(static_cast<unsigned int>(time(0)));
 
+    vector<string> allComments = readCommentsFromFile("input.txt");
+    if (allComments.empty()) {
+        cout << "Error: No comments available!" << endl;
+        return 1;
+    }
+
     Movie testMovie("Test movie 1");
-    testMovie.addReview("Test comment 1");
+    testMovie.addReview(allComments[0].c_str());
     testMovie.printReviews();
 
     return 0;
